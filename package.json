@@ -1,6 +1,6 @@
 {
   "name": "react-windy-leaflet",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "React components for Windy API using react-leaflet",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -56,7 +56,7 @@
     "warning": "^4.0.3"
   },
   "peerDependencies": {
-    "leaflet": "^1.5.1",
+    "leaflet": "1.4.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
   },
