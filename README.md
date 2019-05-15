@@ -23,3 +23,7 @@ Please **do not** use GitHub issues for support, but instead post your questions
 
 MIT\
 See [LICENSE](LICENSE) file.
+
+## Credits
+
+All original work credits goes to the [React-Leaflet](http://react-leaflet.js.org) project.
