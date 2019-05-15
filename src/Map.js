@@ -1,43 +1,39 @@
 // @flow
 
-import {
-  latLngBounds,
-  Map as LeafletMap,
-  type CRS,
-  type Renderer,
-} from 'leaflet'
-import React, { type Node } from 'react'
+import { latLngBounds, type CRS, type Renderer } from "leaflet";
+import React, { type Node } from "react";
 
-import { LeafletProvider } from './context'
-import MapEvented from './MapEvented'
-import updateClassName from './utils/updateClassName'
-import omit from './utils/omit'
+import { LeafletProvider } from "./context";
+import MapEvented from "./MapEvented";
+import updateClassName from "./utils/updateClassName";
+import omit from "./utils/omit";
 import type {
   LatLng,
   LatLngBounds,
   LeafletContext,
   Point,
-  Viewport,
-} from './types'
+  Viewport
+} from "./types";
+
+import { UniversalStyle as Style } from "react-css-component";
+import STYLES from "./Map.styles";
 
 const OTHER_PROPS = [
-  'children',
-  'className',
-  'id',
-  'style',
-  'useFlyTo',
-  'whenReady',
-]
+  "children",
+  "className",
+  "id",
+  "style",
+  "useFlyTo",
+  "whenReady"
+];
 
 const normalizeCenter = (pos: LatLng): [number, number] => {
   return Array.isArray(pos)
     ? [pos[0], pos[1]]
-    : [pos.lat, pos.lon ? pos.lon : pos.lng]
-}
+    : [pos.lat, pos.lon ? pos.lon : pos.lng];
+};
 
-type LeafletElement = LeafletMap
-
-type ZoomOption = boolean | 'center'
+type ZoomOption = boolean | "center";
 type Props = {
   [key: string]: any,
   // Leaflet options
@@ -85,7 +81,7 @@ type Props = {
     paddingTopLeft?: Point,
     paddingBottomRight?: Point,
     padding?: Point,
-    maxZoom?: number,
+    maxZoom?: number
   },
   children: Node,
   className?: string,
@@ -93,41 +89,28 @@ type Props = {
   style?: Object,
   useFlyTo?: boolean,
   viewport?: Viewport,
-  whenReady?: () => void,
-}
+  whenReady?: () => void
+};
 
 export default class Map extends MapEvented<LeafletElement, Props> {
-  className: ?string
-  contextValue: ?LeafletContext
-  container: ?HTMLDivElement
+  className: ?string;
+  contextValue: ?LeafletContext;
+  container: ?HTMLDivElement;
   viewport: Viewport = {
     center: undefined,
-    zoom: undefined,
-  }
+    zoom: undefined
+  };
 
-  _ready: boolean = false
-  _updating: boolean = false
+  _ready: boolean = false;
+  _updating: boolean = false;
 
   constructor(props: Props) {
-    super(props)
-    this.className = props.className
-  }
-
-  createLeafletElement(props: Props): LeafletElement {
-    const { viewport, ...options } = props
-    if (viewport) {
-      if (viewport.center) {
-        options.center = viewport.center
-      }
-      if (typeof viewport.zoom === 'number') {
-        options.zoom = viewport.zoom
-      }
-    }
-    return new LeafletMap(this.container, options)
+    super(props);
+    this.className = props.className;
   }
 
   updateLeafletElement(fromProps: Props, toProps: Props) {
-    this._updating = true
+    this._updating = true;
 
     const {
       animate,
@@ -146,34 +129,41 @@ export default class Map extends MapEvented<LeafletElement, Props> {
       useFlyTo,
       viewport,
       zoom,
-    } = toProps
+      overlay,
+      level,
+      timestamp,
+      favOverlays,
+      product,
+      graticule,
+      particlesAnim
+    } = toProps;
 
-    updateClassName(this.container, fromProps.className, className)
+    updateClassName(this.container, fromProps.className, className);
 
     if (viewport && viewport !== fromProps.viewport) {
-      const c = viewport.center ? viewport.center : center
-      const z = viewport.zoom == null ? zoom : viewport.zoom
+      const c = viewport.center ? viewport.center : center;
+      const z = viewport.zoom == null ? zoom : viewport.zoom;
       if (useFlyTo === true) {
-        this.leafletElement.flyTo(c, z, { animate })
+        this.leafletElement.flyTo(c, z, { animate });
       } else {
-        this.leafletElement.setView(c, z, { animate })
+        this.leafletElement.setView(c, z, { animate });
       }
     } else if (center && this.shouldUpdateCenter(center, fromProps.center)) {
       if (useFlyTo === true) {
-        this.leafletElement.flyTo(center, zoom, { animate })
+        this.leafletElement.flyTo(center, zoom, { animate });
       } else {
-        this.leafletElement.setView(center, zoom, { animate })
+        this.leafletElement.setView(center, zoom, { animate });
       }
-    } else if (typeof zoom === 'number' && zoom !== fromProps.zoom) {
+    } else if (typeof zoom === "number" && zoom !== fromProps.zoom) {
       if (fromProps.zoom == null) {
-        this.leafletElement.setView(center, zoom)
+        this.leafletElement.setView(center, zoom);
       } else {
-        this.leafletElement.setZoom(zoom)
+        this.leafletElement.setZoom(zoom);
       }
     }
 
     if (maxBounds && this.shouldUpdateBounds(maxBounds, fromProps.maxBounds)) {
-      this.leafletElement.setMaxBounds(maxBounds)
+      this.leafletElement.setMaxBounds(maxBounds);
     }
 
     if (
@@ -182,166 +172,228 @@ export default class Map extends MapEvented<LeafletElement, Props> {
         boundsOptions !== fromProps.boundsOptions)
     ) {
       if (useFlyTo === true) {
-        this.leafletElement.flyToBounds(bounds, boundsOptions)
+        this.leafletElement.flyToBounds(bounds, boundsOptions);
       } else {
-        this.leafletElement.fitBounds(bounds, boundsOptions)
+        this.leafletElement.fitBounds(bounds, boundsOptions);
       }
     }
 
     if (boxZoom !== fromProps.boxZoom) {
       if (boxZoom === true) {
-        this.leafletElement.boxZoom.enable()
+        this.leafletElement.boxZoom.enable();
       } else {
-        this.leafletElement.boxZoom.disable()
+        this.leafletElement.boxZoom.disable();
       }
     }
 
     if (doubleClickZoom !== fromProps.doubleClickZoom) {
       if (doubleClickZoom === true) {
-        this.leafletElement.doubleClickZoom.enable()
+        this.leafletElement.doubleClickZoom.enable();
       } else {
-        this.leafletElement.doubleClickZoom.disable()
+        this.leafletElement.doubleClickZoom.disable();
       }
     }
 
     if (dragging !== fromProps.dragging) {
       if (dragging === true) {
-        this.leafletElement.dragging.enable()
+        this.leafletElement.dragging.enable();
       } else {
-        this.leafletElement.dragging.disable()
+        this.leafletElement.dragging.disable();
       }
     }
 
     if (keyboard !== fromProps.keyboard) {
       if (keyboard === true) {
-        this.leafletElement.keyboard.enable()
+        this.leafletElement.keyboard.enable();
       } else {
-        this.leafletElement.keyboard.disable()
+        this.leafletElement.keyboard.disable();
       }
     }
 
     if (scrollWheelZoom !== fromProps.scrollWheelZoom) {
-      if (scrollWheelZoom === true || typeof scrollWheelZoom === 'string') {
-        this.leafletElement.options.scrollWheelZoom = scrollWheelZoom
-        this.leafletElement.scrollWheelZoom.enable()
+      if (scrollWheelZoom === true || typeof scrollWheelZoom === "string") {
+        this.leafletElement.options.scrollWheelZoom = scrollWheelZoom;
+        this.leafletElement.scrollWheelZoom.enable();
       } else {
-        this.leafletElement.scrollWheelZoom.disable()
+        this.leafletElement.scrollWheelZoom.disable();
       }
     }
 
     if (tap !== fromProps.tap) {
       if (tap === true) {
-        this.leafletElement.tap.enable()
+        this.leafletElement.tap.enable();
       } else {
-        this.leafletElement.tap.disable()
+        this.leafletElement.tap.disable();
       }
     }
 
     if (touchZoom !== fromProps.touchZoom) {
-      if (touchZoom === true || typeof touchZoom === 'string') {
-        this.leafletElement.options.touchZoom = touchZoom
-        this.leafletElement.touchZoom.enable()
+      if (touchZoom === true || typeof touchZoom === "string") {
+        this.leafletElement.options.touchZoom = touchZoom;
+        this.leafletElement.touchZoom.enable();
       } else {
-        this.leafletElement.touchZoom.disable()
+        this.leafletElement.touchZoom.disable();
       }
     }
 
-    this._updating = false
+    if (overlay !== fromProps.overlay) {
+      this.windyStore.set("overlay", overlay);
+    }
+
+    if (level !== fromProps.level) {
+      this.windyStore.set("level", level);
+    }
+
+    if (timestamp !== fromProps.timestamp) {
+      this.windyStore.set("timestamp", timestamp);
+    }
+
+    if (favOverlays !== fromProps.favOverlays) {
+      this.windyStore.set("favOverlays", favOverlays);
+    }
+
+    if (product !== fromProps.product) {
+      this.windyStore.set("overlay", product);
+    }
+
+    if (graticule !== fromProps.graticule) {
+      this.windyStore.set("graticule", graticule);
+    }
+
+    if (particlesAnim !== fromProps.particlesAnim) {
+      this.windyStore.set("particlesAnim", particlesAnim);
+    }
+
+    this._updating = false;
   }
 
   onViewportChange = () => {
-    const center = this.leafletElement.getCenter()
+    const center = this.leafletElement.getCenter();
     this.viewport = {
       center: center ? [center.lat, center.lng] : undefined,
-      zoom: this.leafletElement.getZoom(),
-    }
+      zoom: this.leafletElement.getZoom()
+    };
     if (this.props.onViewportChange && !this._updating) {
-      this.props.onViewportChange(this.viewport)
+      this.props.onViewportChange(this.viewport);
     }
-  }
+  };
 
   onViewportChanged = () => {
     if (this.props.onViewportChanged && !this._updating) {
-      this.props.onViewportChanged(this.viewport)
+      this.props.onViewportChanged(this.viewport);
     }
-  }
+  };
 
   componentDidMount() {
-    const props = omit(this.props, ...OTHER_PROPS)
-    this.leafletElement = this.createLeafletElement(props)
+    const props = omit(this.props, ...OTHER_PROPS);
+    props.key = props.windyKey;
 
-    this.leafletElement.on('move', this.onViewportChange)
-    this.leafletElement.on('moveend', this.onViewportChanged)
-
-    if (props.bounds != null) {
-      this.leafletElement.fitBounds(props.bounds, props.boundsOptions)
+    const { viewport, ...options } = props;
+    if (viewport) {
+      if (viewport.center) {
+        options.center = viewport.center;
+      }
+      if (typeof viewport.zoom === "number") {
+        options.zoom = viewport.zoom;
+      }
     }
 
-    this.contextValue = {
-      layerContainer: this.leafletElement,
-      map: this.leafletElement,
-    }
+    const script = document.createElement("script");
+    script.src = "https://api4.windy.com/assets/libBoot.js";
+    script.async = true;
+    script.onload = () => {
+      windyInit(options, windyAPI => {
+        const { map, store } = windyAPI;
 
-    super.componentDidMount()
-    this.forceUpdate() // Re-render now that leafletElement is created
+        this.windyStore = store;
+        this.leafletElement = map;
+
+        this.leafletElement.on("move", this.onViewportChange);
+        this.leafletElement.on("moveend", this.onViewportChanged);
+
+        if (props.bounds != null) {
+          this.leafletElement.fitBounds(props.bounds, props.boundsOptions);
+        }
+
+        this.contextValue = {
+          layerContainer: this.leafletElement,
+          map: this.leafletElement
+        };
+
+        super.componentDidMount();
+        this.forceUpdate(); // Re-render now that leafletElement is created
+      });
+    };
+    document.body.appendChild(script);
   }
 
   componentDidUpdate(prevProps: Props) {
     if (this._ready === false) {
-      this._ready = true
+      this._ready = true;
       if (this.props.whenReady) {
-        this.leafletElement.whenReady(this.props.whenReady)
+        this.leafletElement.whenReady(this.props.whenReady);
       }
     }
 
-    super.componentDidUpdate(prevProps)
-    this.updateLeafletElement(prevProps, this.props)
+    super.componentDidUpdate(prevProps);
+    this.updateLeafletElement(prevProps, this.props);
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount()
+    super.componentWillUnmount();
 
-    this.leafletElement.off('move', this.onViewportChange)
-    this.leafletElement.off('moveend', this.onViewportChanged)
+    this.leafletElement.off("move", this.onViewportChange);
+    this.leafletElement.off("moveend", this.onViewportChanged);
 
     // The canvas renderer uses requestAnimationFrame, making a deferred call to a deleted object
     // When preferCanvas is set, use simpler teardown logic
     if (this.props.preferCanvas === true) {
-      this.leafletElement._initEvents(true)
-      this.leafletElement._stop()
+      this.leafletElement._initEvents(true);
+      this.leafletElement._stop();
     } else {
-      this.leafletElement.remove()
+      this.leafletElement.remove();
     }
   }
 
   bindContainer = (container: ?HTMLDivElement): void => {
-    this.container = container
-  }
+    this.container = container;
+  };
 
   shouldUpdateCenter(next: LatLng, prev: LatLng) {
-    if (!prev) return true
-    next = normalizeCenter(next)
-    prev = normalizeCenter(prev)
-    return next[0] !== prev[0] || next[1] !== prev[1]
+    if (!prev) return true;
+    next = normalizeCenter(next);
+    prev = normalizeCenter(prev);
+    return next[0] !== prev[0] || next[1] !== prev[1];
   }
 
   shouldUpdateBounds(next: LatLngBounds, prev: LatLngBounds) {
-    return prev ? !latLngBounds(next).equals(latLngBounds(prev)) : true
+    return prev ? !latLngBounds(next).equals(latLngBounds(prev)) : true;
   }
 
   render() {
+    const { windyLabels, windyControls, overlay, overlayOpacity } = this.props;
+
     return (
-      <div
-        className={this.className}
-        id={this.props.id}
-        ref={this.bindContainer}
-        style={this.props.style}>
-        {this.contextValue ? (
-          <LeafletProvider value={this.contextValue}>
-            {this.props.children}
-          </LeafletProvider>
-        ) : null}
-      </div>
-    )
+      <React.Fragment>
+        <Style css={STYLES.BASE} />
+        { overlay !== "none" && <Style css={STYLES.WINDY_OVERLAY} /> }
+        { overlayOpacity && <Style css={STYLES.WINDY_OVERLAY_OPACITY(overlayOpacity)} /> }
+        { !windyLabels && <Style css={STYLES.NO_WINDY_LABELS} /> }
+        { !windyControls && <Style css={STYLES.NO_WINDY_CONTROLS} /> }
+
+        <div
+          className={this.className}
+          id="windy"
+          ref={this.bindContainer}
+          style={this.props.style}
+        >
+          {this.contextValue ? (
+            <LeafletProvider value={this.contextValue}>
+              {this.props.children}
+            </LeafletProvider>
+          ) : null}
+        </div>
+      </React.Fragment>
+    );
   }
 }
