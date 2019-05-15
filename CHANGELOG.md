@@ -2,4 +2,4 @@
 
 - Created library based on react-leaflet
 - Added basic functions of WindyAPI
-- Fixed CSS issues
+- Fixed CSS issuesn
