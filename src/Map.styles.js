@@ -7,7 +7,7 @@ export default {
     #windy .leaflet-tile-pane .overlay-layer,
     #windy #map-container .leaflet-tile-pane .particles-layer {
       z-index: 1000 !important;
-      display: none;
+      display: none !important;
     }
 
     #windy .leaflet-tile-pane .basemap-layer {
@@ -32,7 +32,7 @@ export default {
   WINDY_OVERLAY: `
     #windy .leaflet-tile-pane .overlay-layer,
     #windy #map-container .leaflet-tile-pane .particles-layer {
-      display: block;
+      display: block !important;
     }
 
     #windy .leaflet-tile-pane .basemap-layer {

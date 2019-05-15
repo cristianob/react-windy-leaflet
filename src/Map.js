@@ -238,7 +238,11 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     }
 
     if (overlay !== fromProps.overlay) {
-      this.windyStore.set("overlay", overlay);
+      if(overlay === "none") {
+        this.windyStore.set("overlay", "wind");  
+      } else {
+        this.windyStore.set("overlay", overlay);
+      }
     }
 
     if (level !== fromProps.level) {
@@ -288,6 +292,10 @@ export default class Map extends MapEvented<LeafletElement, Props> {
   componentDidMount() {
     const props = omit(this.props, ...OTHER_PROPS);
     props.key = props.windyKey;
+
+    if(props.overlay === "none"){
+      props.overlay = "wind";
+    }
 
     const { viewport, ...options } = props;
     if (viewport) {
