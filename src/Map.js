@@ -101,6 +101,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     zoom: undefined
   };
 
+  _windyMapReady: boolean = false;
   _ready: boolean = false;
   _updating: boolean = false;
 
@@ -320,6 +321,12 @@ export default class Map extends MapEvented<LeafletElement, Props> {
           map: this.leafletElement
         };
 
+        this._windyMapReady = true;
+
+        if (this.props.onWindyMapReady) {
+          this.props.onWindyMapReady();
+        }
+
         super.componentDidMount();
         this.forceUpdate(); // Re-render now that leafletElement is created
       });
@@ -389,7 +396,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
         >
           {this.contextValue ? (
             <LeafletProvider value={this.contextValue}>
-              {this.props.children}
+              {this._windyMapReady && this.props.mapElements}
             </LeafletProvider>
           ) : null}
         </div>

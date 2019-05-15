@@ -29,30 +29,34 @@ export default class SimpleExample extends Component<{}, State> {
         windyKey={this.props.windyKey}
         windyLabels={false}
         windyControls={false}
-
         overlay={this.state.overlay}
         overlayOpacity={0.5}
-        
         particlesAnim={false}
         lat={this.state.lat}
         lng={this.state.lng}
         zoom={this.state.zoom}
-      >
-        <LayersControl>
-          <BaseLayer checked name="OSM">
-            <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          </BaseLayer>
-        </LayersControl>
-        
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </Map>
+        onWindyMapReady={() => {
+          console.log("Windy Map Loaded!");
+        }}
+        mapElements={
+          <React.Fragment>
+            <LayersControl>
+              <BaseLayer checked name="OSM">
+                <TileLayer
+                  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+              </BaseLayer>
+            </LayersControl>
+
+            <Marker position={position}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          </React.Fragment>
+        }
+      />
     );
   }
 }
