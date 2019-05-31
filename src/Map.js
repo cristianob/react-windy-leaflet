@@ -238,8 +238,8 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     }
 
     if (overlay !== fromProps.overlay) {
-      if(overlay === "none") {
-        this.windyStore.set("overlay", "wind");  
+      if (overlay === "none") {
+        this.windyStore.set("overlay", "wind");
       } else {
         this.windyStore.set("overlay", overlay);
       }
@@ -293,7 +293,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     const props = omit(this.props, ...OTHER_PROPS);
     props.key = props.windyKey;
 
-    if(props.overlay === "none"){
+    if (props.overlay === "none") {
       props.overlay = "wind";
     }
 
@@ -317,11 +317,19 @@ export default class Map extends MapEvented<LeafletElement, Props> {
         this.windyStore = store;
         this.leafletElement = map;
 
+        this.leafletElement.options.maxZoom = props.maxZoom || 18;
+        this.leafletElement.options.minZoom = props.minZoom || 2;
+
         this.leafletElement.on("move", this.onViewportChange);
         this.leafletElement.on("moveend", this.onViewportChanged);
 
         if (props.bounds != null) {
           this.leafletElement.fitBounds(props.bounds, props.boundsOptions);
+        }
+
+        if(props.removeWindyLayers) {
+          this.leafletElement.removeLayer(this.leafletElement._layers["17"]);
+          this.leafletElement.removeLayer(this.leafletElement._layers["42"]);
         }
 
         this.contextValue = {
@@ -391,10 +399,12 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     return (
       <React.Fragment>
         <Style css={STYLES.BASE} />
-        { overlay !== "none" && <Style css={STYLES.WINDY_OVERLAY} /> }
-        { overlayOpacity && <Style css={STYLES.WINDY_OVERLAY_OPACITY(overlayOpacity)} /> }
-        { !windyLabels && <Style css={STYLES.NO_WINDY_LABELS} /> }
-        { !windyControls && <Style css={STYLES.NO_WINDY_CONTROLS} /> }
+        {overlay !== "none" && <Style css={STYLES.WINDY_OVERLAY} />}
+        {overlayOpacity && (
+          <Style css={STYLES.WINDY_OVERLAY_OPACITY(overlayOpacity)} />
+        )}
+        {!windyLabels && <Style css={STYLES.NO_WINDY_LABELS} />}
+        {!windyControls && <Style css={STYLES.NO_WINDY_CONTROLS} />}
 
         <div
           className={this.className}

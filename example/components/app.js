@@ -8,7 +8,7 @@ import SimpleExample from './simple'
 Leaflet.Icon.Default.imagePath =
   '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/images/'
 
-const windyKey = "YOUR_WINDY_KEY";
+const windyKey = "WINDY_KEY";
 
 const App = () => (
   <React.Fragment>

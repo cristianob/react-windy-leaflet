@@ -35,6 +35,7 @@ export default class SimpleExample extends Component<{}, State> {
         lat={this.state.lat}
         lng={this.state.lng}
         zoom={this.state.zoom}
+        removeWindyLayers
         onWindyMapReady={() => {
           console.log("Windy Map Loaded!");
         }}
