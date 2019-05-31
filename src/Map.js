@@ -327,9 +327,20 @@ export default class Map extends MapEvented<LeafletElement, Props> {
           this.leafletElement.fitBounds(props.bounds, props.boundsOptions);
         }
 
-        if(props.removeWindyLayers) {
-          this.leafletElement.removeLayer(this.leafletElement._layers["17"]);
-          this.leafletElement.removeLayer(this.leafletElement._layers["42"]);
+        if (props.removeWindyLayers) {
+          window.setTimeout(() => {
+            Object.keys(this.leafletElement._layers).forEach(key => {
+              if(this.leafletElement._layers[key]._url && this.leafletElement._layers[key]._url.includes("windy")) {
+                this.leafletElement.removeLayer(this.leafletElement._layers[key]);
+                return;
+              }
+              
+              if(this.leafletElement._layers[key].tilesUrl && this.leafletElement._layers[key].tilesUrl.includes("windy")) {
+                this.leafletElement.removeLayer(this.leafletElement._layers[key]);
+                return ;
+              }
+            });
+          }, 2000);
         }
 
         this.contextValue = {
