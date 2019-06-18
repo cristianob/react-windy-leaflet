@@ -324,6 +324,14 @@ export default class Map extends MapEvented<LeafletElement, Props> {
         this.leafletElement.on("move", this.onViewportChange);
         this.leafletElement.on("moveend", this.onViewportChanged);
 
+        if (props.center && props.zoom) {
+          if (Array.isArray(props.center)) {
+            this.leafletElement.setView(new L.LatLng(props.center[0], props.center[1]), props.zoom)
+          } else {
+            this.leafletElement.setView(new L.LatLng(props.center.lat, props.center.lng), props.zoom)
+          }
+        }
+
         if (props.bounds != null) {
           this.leafletElement.fitBounds(props.bounds, props.boundsOptions);
         }
@@ -353,8 +361,6 @@ export default class Map extends MapEvented<LeafletElement, Props> {
               //     this.leafletElement.removeLayer(layer);
               // }
             });
-
-            console.log(this.leafletElement._layers);
           }, 2000);
         }
 

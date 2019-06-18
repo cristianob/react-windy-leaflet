@@ -13,8 +13,8 @@ const { BaseLayer, Overlay } = LayersControl;
 
 export default class SimpleExample extends Component<{}, State> {
   state = {
-    lat: -23.505,
-    lng: -42.09,
+    lat: 0,
+    lng: 0,
     zoom: 1,
 
     overlay: "clouds"
@@ -32,9 +32,8 @@ export default class SimpleExample extends Component<{}, State> {
         overlay={this.state.overlay}
         overlayOpacity={0.5}
         particlesAnim={false}
-        lat={this.state.lat}
-        lng={this.state.lng}
         zoom={this.state.zoom}
+        center={[this.state.lat,this.state.lng]}
         removeWindyLayers
         onWindyMapReady={() => {
           console.log("Windy Map Loaded!");
