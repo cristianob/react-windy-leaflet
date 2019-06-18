@@ -104,6 +104,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
   _windyMapReady: boolean = false;
   _ready: boolean = false;
   _updating: boolean = false;
+  _windyParticleLayer: ?any = null;
 
   constructor(props: Props) {
     super(props);
@@ -329,19 +330,34 @@ export default class Map extends MapEvented<LeafletElement, Props> {
 
         if (props.removeWindyLayers) {
           window.setTimeout(() => {
-            Object.keys(this.leafletElement._layers).forEach(key => {
-              if(this.leafletElement._layers[key]._url && this.leafletElement._layers[key]._url.includes("windy")) {
-                this.leafletElement.removeLayer(this.leafletElement._layers[key]);
+            this.leafletElement.eachLayer(layer => {
+              if(layer._url && layer._url.includes("windy")) {
+                this.leafletElement.removeLayer(layer);
                 return;
               }
               
-              if(this.leafletElement._layers[key].tilesUrl && this.leafletElement._layers[key].tilesUrl.includes("windy")) {
-                this.leafletElement.removeLayer(this.leafletElement._layers[key]);
-                return ;
+              if(layer.tilesUrl && layer.tilesUrl.includes("windy")) {
+                this.leafletElement.removeLayer(layer);
+                return;
               }
+
+              // if(layer.mapParams && 
+              //   layer.mapParams.fullPath && 
+              //   layer.mapParams.fullPath.includes("wind-surface")) {
+              //     this._windyParticleLayer = layer;
+              //     this.leafletElement.removeLayer(this._windyParticleLayer);
+              // }
+
+              // if(layer.latestParams && 
+              //   layer.latestParams.overlay === "wind") {
+              //     this.leafletElement.removeLayer(layer);
+              // }
             });
+
+            console.log(this.leafletElement._layers);
           }, 2000);
         }
+
 
         this.contextValue = {
           layerContainer: this.leafletElement,
@@ -369,8 +385,10 @@ export default class Map extends MapEvented<LeafletElement, Props> {
       }
     }
 
-    super.componentDidUpdate(prevProps);
-    this.updateLeafletElement(prevProps, this.props);
+    if (this.leafletElement) {
+      super.componentDidUpdate(prevProps);
+      this.updateLeafletElement(prevProps, this.props);
+    }
   }
 
   componentWillUnmount() {
