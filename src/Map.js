@@ -326,9 +326,15 @@ export default class Map extends MapEvented<LeafletElement, Props> {
 
         if (props.center && props.zoom) {
           if (Array.isArray(props.center)) {
-            this.leafletElement.setView(new L.LatLng(props.center[0], props.center[1]), props.zoom)
+            this.leafletElement.setView(
+              new L.LatLng(props.center[0], props.center[1]),
+              props.zoom
+            );
           } else {
-            this.leafletElement.setView(new L.LatLng(props.center.lat, props.center.lng), props.zoom)
+            this.leafletElement.setView(
+              new L.LatLng(props.center.lat, props.center.lng),
+              props.zoom
+            );
           }
         }
 
@@ -339,24 +345,24 @@ export default class Map extends MapEvented<LeafletElement, Props> {
         if (props.removeWindyLayers) {
           window.setTimeout(() => {
             this.leafletElement.eachLayer(layer => {
-              if(layer._url && layer._url.includes("windy")) {
-                this.leafletElement.removeLayer(layer);
-                return;
-              }
-              
-              if(layer.tilesUrl && layer.tilesUrl.includes("windy")) {
+              if (layer._url && layer._url.includes("windy")) {
                 this.leafletElement.removeLayer(layer);
                 return;
               }
 
-              // if(layer.mapParams && 
-              //   layer.mapParams.fullPath && 
+              if (layer.tilesUrl && layer.tilesUrl.includes("windy")) {
+                this.leafletElement.removeLayer(layer);
+                return;
+              }
+
+              // if(layer.mapParams &&
+              //   layer.mapParams.fullPath &&
               //   layer.mapParams.fullPath.includes("wind-surface")) {
               //     this._windyParticleLayer = layer;
               //     this.leafletElement.removeLayer(this._windyParticleLayer);
               // }
 
-              // if(layer.latestParams && 
+              // if(layer.latestParams &&
               //   layer.latestParams.overlay === "wind") {
               //     this.leafletElement.removeLayer(layer);
               // }
@@ -364,7 +370,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
           }, 2000);
         }
 
-
+        // window.setTimeout(() => {
         this.contextValue = {
           layerContainer: this.leafletElement,
           map: this.leafletElement
@@ -378,6 +384,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
 
         super.componentDidMount();
         this.forceUpdate(); // Re-render now that leafletElement is created
+        // }, 1000);
       });
     };
     document.body.appendChild(script);
@@ -400,16 +407,18 @@ export default class Map extends MapEvented<LeafletElement, Props> {
   componentWillUnmount() {
     super.componentWillUnmount();
 
-    this.leafletElement.off("move", this.onViewportChange);
-    this.leafletElement.off("moveend", this.onViewportChanged);
+    if (this.leafletElement) {
+      this.leafletElement.off("move", this.onViewportChange);
+      this.leafletElement.off("moveend", this.onViewportChanged);
 
-    // The canvas renderer uses requestAnimationFrame, making a deferred call to a deleted object
-    // When preferCanvas is set, use simpler teardown logic
-    if (this.props.preferCanvas === true) {
-      this.leafletElement._initEvents(true);
-      this.leafletElement._stop();
-    } else {
-      this.leafletElement.remove();
+      // The canvas renderer uses requestAnimationFrame, making a deferred call to a deleted object
+      // When preferCanvas is set, use simpler teardown logic
+      if (this.props.preferCanvas === true) {
+        this.leafletElement._initEvents(true);
+        this.leafletElement._stop();
+      } else {
+        this.leafletElement.remove();
+      }
     }
   }
 
