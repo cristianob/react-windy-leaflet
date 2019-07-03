@@ -1,7 +1,7 @@
 // @flow
 
 import Leaflet from "leaflet";
-import React, { useState } from "react";
+import React from "react";
 
 import SimpleExample from "./simple";
 
@@ -11,14 +11,11 @@ Leaflet.Icon.Default.imagePath =
 const windyKey = "WINDY_KEY";
 
 const App = props => {
-  const [open, setOpen] = useState(false);
-
   return (
     <React.Fragment>
       <h1>React-Windy-Leaflet examples</h1>
       <h2>Popup with Marker</h2>
-      <button onClick={() => setOpen(!open)}>Abrir</button>
-      {open && <SimpleExample windyKey={windyKey} />}
+      <SimpleExample windyKey={windyKey} />
     </React.Fragment>
   );
 };

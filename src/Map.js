@@ -101,6 +101,10 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     zoom: undefined
   };
 
+  windyStore: ?any = null;
+  windyPicker: ?any = null;
+  windyBroadcast: ?any = null;
+
   _windyMapReady: boolean = false;
   _ready: boolean = false;
   _updating: boolean = false;
@@ -137,7 +141,8 @@ export default class Map extends MapEvented<LeafletElement, Props> {
       favOverlays,
       product,
       graticule,
-      particlesAnim
+      particlesAnim,
+      pickerPosition
     } = toProps;
 
     updateClassName(this.container, fromProps.className, className);
@@ -270,6 +275,20 @@ export default class Map extends MapEvented<LeafletElement, Props> {
       this.windyStore.set("particlesAnim", particlesAnim);
     }
 
+    if (fromProps.pickerPosition && !pickerPosition) {
+      this.windyPicker.close();
+    }
+
+    if (
+      (!fromProps.pickerPosition && pickerPosition) ||
+      (fromProps.pickerPosition &&
+        pickerPosition &&
+        (fromProps.pickerPosition[0] !== pickerPosition[0] ||
+          fromProps.pickerPosition[1] !== pickerPosition[1]))
+    ) {
+      this.windyPicker.open({ lat: pickerPosition[0], lon: pickerPosition[1] });
+    }
+
     this._updating = false;
   }
 
@@ -313,9 +332,11 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     script.async = true;
     script.onload = () => {
       windyInit(options, windyAPI => {
-        const { map, store } = windyAPI;
+        const { map, store, picker, broadcast } = windyAPI;
 
         this.windyStore = store;
+        this.windyPicker = picker;
+        this.windyBroadcast = broadcast;
         this.leafletElement = map;
 
         this.leafletElement.options.maxZoom = props.maxZoom || 18;
@@ -323,6 +344,18 @@ export default class Map extends MapEvented<LeafletElement, Props> {
 
         this.leafletElement.on("move", this.onViewportChange);
         this.leafletElement.on("moveend", this.onViewportChanged);
+
+        if (props.onPickerOpened) {
+          picker.on("pickerOpened", latLon => props.onPickerOpened(latLon));
+        }
+
+        if (props.onPickerMoved) {
+          picker.on("pickerMoved", latLon => props.onPickerMoved(latLon));
+        }
+
+        if (props.onPickerClosed) {
+          picker.on("pickerClosed", () => props.onPickerClosed());
+        }
 
         if (props.center && props.zoom) {
           if (Array.isArray(props.center)) {
@@ -342,8 +375,8 @@ export default class Map extends MapEvented<LeafletElement, Props> {
           this.leafletElement.fitBounds(props.bounds, props.boundsOptions);
         }
 
-        if (props.removeWindyLayers) {
-          window.setTimeout(() => {
+        broadcast.once("redrawFinished", () => {
+          if (props.removeWindyLayers) {
             this.leafletElement.eachLayer(layer => {
               if (layer._url && layer._url.includes("windy")) {
                 this.leafletElement.removeLayer(layer);
@@ -354,37 +387,30 @@ export default class Map extends MapEvented<LeafletElement, Props> {
                 this.leafletElement.removeLayer(layer);
                 return;
               }
-
-              // if(layer.mapParams &&
-              //   layer.mapParams.fullPath &&
-              //   layer.mapParams.fullPath.includes("wind-surface")) {
-              //     this._windyParticleLayer = layer;
-              //     this.leafletElement.removeLayer(this._windyParticleLayer);
-              // }
-
-              // if(layer.latestParams &&
-              //   layer.latestParams.overlay === "wind") {
-              //     this.leafletElement.removeLayer(layer);
-              // }
             });
-          }, 2000);
-        }
+          }
 
-        // window.setTimeout(() => {
-        this.contextValue = {
-          layerContainer: this.leafletElement,
-          map: this.leafletElement
-        };
+          if (props.pickerPosition) {
+            picker.open({
+              lat: props.pickerPosition[0],
+              lon: props.pickerPosition[1]
+            });
+          }
 
-        this._windyMapReady = true;
+          this.contextValue = {
+            layerContainer: this.leafletElement,
+            map: this.leafletElement
+          };
 
-        if (this.props.onWindyMapReady) {
-          this.props.onWindyMapReady();
-        }
+          this._windyMapReady = true;
 
-        super.componentDidMount();
-        this.forceUpdate(); // Re-render now that leafletElement is created
-        // }, 1000);
+          if (this.props.onWindyMapReady) {
+            this.props.onWindyMapReady();
+          }
+
+          super.componentDidMount();
+          this.forceUpdate(); // Re-render now that leafletElement is created
+        });
       });
     };
     document.body.appendChild(script);
