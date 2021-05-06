@@ -16,7 +16,7 @@
               "node": "current",
               "browsers": ["last 2 versions", "ie >= 11"]
             },
-            "modules": "commonjs",
+            "modules": false,
             "loose": true
           }
         ],
