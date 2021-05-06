@@ -468,7 +468,6 @@ export default class Map extends MapEvented<LeafletElement, Props> {
 
     return (
       <React.Fragment>
-        <Style css={STYLES.BASE} />
         {overlay !== "none" && <Style css={STYLES.WINDY_OVERLAY} />}
         {overlayOpacity && (
           <Style css={STYLES.WINDY_OVERLAY_OPACITY(overlayOpacity)} />

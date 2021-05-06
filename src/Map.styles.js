@@ -39,15 +39,6 @@ export default {
       display: block;
     }
 
-    #windy #map-container .labels-layer [data-id].city-1, 
-    #windy #map-container .labels-layer [data-id].city-2, 
-    #windy #map-container .labels-layer [data-id].city-3, 
-    #windy #map-container .labels-layer [data-id].city-4,
-    #windy #map-container .labels-layer [data-id].country-1,
-    #windy #map-container .labels-layer [data-id].country-2 {
-      display: block;
-    }
-
     #windy #mobile-ovr-select,
     #windy #embed-zoom,
     #windy #bottom {
