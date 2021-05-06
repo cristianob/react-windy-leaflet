@@ -328,7 +328,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
     }
 
     const script = document.createElement("script");
-    script.src = "https://api4.windy.com/assets/libBoot.js";
+    script.src = "https://api.windy.com/assets/map-forecast/libBoot.js";
     script.async = true;
     script.onload = () => {
       windyInit(options, windyAPI => {
