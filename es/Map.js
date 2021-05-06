@@ -427,7 +427,9 @@ function (_MapEvented) {
         windyControls = _this$props.windyControls,
         overlay = _this$props.overlay,
         overlayOpacity = _this$props.overlayOpacity;
-    return React.createElement(React.Fragment, null, overlay !== "none" && React.createElement(Style, {
+    return React.createElement(React.Fragment, null, React.createElement(Style, {
+      css: STYLES.BASE
+    }), overlay !== "none" && React.createElement(Style, {
       css: STYLES.WINDY_OVERLAY
     }), overlayOpacity && React.createElement(Style, {
       css: STYLES.WINDY_OVERLAY_OPACITY(overlayOpacity)

@@ -2633,12 +2633,12 @@
 	}(React.Component);
 
 	var STYLES = {
-	  BASE: "\n    #windy #map-container {\n      z-index: 0;\n    }\n\n    #windy .leaflet-tile-pane .overlay-layer,\n    #windy #map-container .leaflet-tile-pane .particles-layer {\n      z-index: 1000 !important;\n      display: none !important;\n    }\n\n    #windy .leaflet-tile-pane .basemap-layer {\n      display: none;\n      z-index: 1 !important;\n    }\n\n    #windy #map-container .labels-layer [data-id].city-1, \n    #windy #map-container .labels-layer [data-id].city-2, \n    #windy #map-container .labels-layer [data-id].city-3, \n    #windy #map-container .labels-layer [data-id].city-4,\n    #windy #map-container .labels-layer [data-id].country-1,\n    #windy #map-container .labels-layer [data-id].country-2 {\n      display: none;\n    }\n\n    #windy #map-container .leaflet-control-container {\n      display: block;\n    }\n    ",
-	  WINDY_OVERLAY: "\n    #windy .leaflet-tile-pane .overlay-layer,\n    #windy #map-container .leaflet-tile-pane .particles-layer {\n      display: block !important;\n    }\n\n    #windy .leaflet-tile-pane .basemap-layer {\n      display: block;\n    }\n\n    #windy #mobile-ovr-select,\n    #windy #embed-zoom,\n    #windy #bottom {\n      display: block;\n    }\n    ",
-	  NO_WINDY_LABELS: "\n    #windy #map-container .labels-layer [data-id].city-1, \n    #windy #map-container .labels-layer [data-id].city-2, \n    #windy #map-container .labels-layer [data-id].city-3, \n    #windy #map-container .labels-layer [data-id].city-4,\n    #windy #map-container .labels-layer [data-id].country-1,\n    #windy #map-container .labels-layer [data-id].country-2 {\n      display: none !important;\n    }\n    ",
+	  BASE: "\n    #windy .leaflet-tile-pane .overlay-layer,\n    #windy #map-container .leaflet-tile-pane .particles-layer {\n      display: none !important;\n    }\n\n    #windy .leaflet-tile-pane .basemap-layer {\n      display: none;\n    }\n\n     #windy .leaflet-tile-pane .sea-mask-layer {\n       display: none;\n     }\n\n    #windy #map-container .leaflet-control-container {\n      display: block;\n    }\n    ",
+	  WINDY_OVERLAY: "\n    #windy .leaflet-tile-pane .overlay-layer,\n    #windy #map-container .leaflet-tile-pane .particles-layer {\n      display: block !important;\n    }\n\n    #windy .leaflet-tile-pane .basemap-layer {\n      display: block;\n    }\n\n    #windy .leaflet-tile-pane .sea-mask-layer {\n      display: block;\n    }\n\n    #windy #mobile-ovr-select,\n    #windy #embed-zoom,\n    #windy #bottom {\n      display: block;\n    }\n    ",
+	  NO_WINDY_LABELS: "\n    #windy #map-container .labels-layer [data-id].city-1,\n    #windy #map-container .labels-layer [data-id].city-2,\n    #windy #map-container .labels-layer [data-id].city-3,\n    #windy #map-container .labels-layer [data-id].city-4,\n    #windy #map-container .labels-layer [data-id].country-1,\n    #windy #map-container .labels-layer [data-id].country-2 {\n      display: none !important;\n    }\n    ",
 	  NO_WINDY_CONTROLS: "\n    #windy #mobile-ovr-select,\n    #windy #embed-zoom,\n    #windy #bottom {\n      display: none !important;\n    }\n    ",
 	  WINDY_OVERLAY_OPACITY: function WINDY_OVERLAY_OPACITY(opacity) {
-	    return "\n    #windy .leaflet-tile-pane .overlay-layer {\n      opacity: ".concat(opacity, " !important;\n    }\n    ");
+	    return "\n    #windy .leaflet-tile-pane .overlay-layer {\n      opacity: ".concat(opacity, " !important;\n    }\n  ");
 	  }
 	};
 
@@ -3065,7 +3065,9 @@
 	          windyControls = _this$props.windyControls,
 	          overlay = _this$props.overlay,
 	          overlayOpacity = _this$props.overlayOpacity;
-	      return React__default.createElement(React__default.Fragment, null, overlay !== "none" && React__default.createElement(UniversalStyle, {
+	      return React__default.createElement(React__default.Fragment, null, React__default.createElement(UniversalStyle, {
+	        css: STYLES.BASE
+	      }), overlay !== "none" && React__default.createElement(UniversalStyle, {
 	        css: STYLES.WINDY_OVERLAY
 	      }), overlayOpacity && React__default.createElement(UniversalStyle, {
 	        css: STYLES.WINDY_OVERLAY_OPACITY(overlayOpacity)
