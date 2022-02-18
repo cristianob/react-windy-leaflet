@@ -5097,6 +5097,11 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
+leaflet.antimeridian@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/leaflet.antimeridian/-/leaflet.antimeridian-1.0.0.tgz#1826577d34a18aacebc0c0fd24d0403a7210bd92"
+  integrity sha512-679iWgPWlLpViyWvug4HLMKlfHig5KmxvCNKSHwxGl2J1ArzXKE0XlIwOhVHT0F33QlVlGZ4pfFKS3r/w8NfHA==
+
 leaflet@1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.4.0.tgz#d5f56eeb2aa32787c24011e8be4c77e362ae171b"

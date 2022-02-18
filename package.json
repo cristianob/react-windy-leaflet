@@ -52,6 +52,7 @@
     "@babel/runtime": "^7.4.4",
     "fast-deep-equal": "^2.0.1",
     "hoist-non-react-statics": "^3.3.0",
+    "leaflet.antimeridian": "^1.0.0",
     "react-css-component": "^1.0.2",
     "warning": "^4.0.3"
   },
