@@ -2995,7 +2995,7 @@
 	            _this2._windyMapReady = true;
 
 	            if (_this2.props.onWindyMapReady) {
-	              _this2.props.onWindyMapReady();
+	              _this2.props.onWindyMapReady(_this2);
 	            }
 
 	            get(getPrototypeOf$1(Map.prototype), "componentDidMount", _this2).call(_this2);
