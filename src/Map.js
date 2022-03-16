@@ -405,7 +405,7 @@ export default class Map extends MapEvented<LeafletElement, Props> {
           this._windyMapReady = true;
 
           if (this.props.onWindyMapReady) {
-            this.props.onWindyMapReady();
+            this.props.onWindyMapReady(this);
           }
 
           super.componentDidMount();

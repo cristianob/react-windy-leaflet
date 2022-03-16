@@ -362,7 +362,7 @@ function (_MapEvented) {
           _this2._windyMapReady = true;
 
           if (_this2.props.onWindyMapReady) {
-            _this2.props.onWindyMapReady();
+            _this2.props.onWindyMapReady(_this2);
           }
 
           _MapEvented.prototype.componentDidMount.call(_this2);
