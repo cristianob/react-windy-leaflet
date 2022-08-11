@@ -27,7 +27,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   devServer: {
-    contentBase: __dirname,
+    static: __dirname,
     port: 8000,
   },
 }
